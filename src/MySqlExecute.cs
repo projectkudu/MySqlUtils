@@ -20,7 +20,12 @@ namespace MySqlUtils
             var arguments = string.Format(@"-u{0} -p{1} -h{2} --port={3} {4}", UserID, Password, Server, Port, Database);
             Trace("\"{0}\" {1}", exe, arguments.Replace(Password, "*****"));
 
-            var process = MySqlProcess.Start(exe, arguments);
+            MySqlProcess process;
+            if (!TryStartSqlProcess(context, exe, arguments, out process))
+            {
+                return;
+            }
+
             var processName = process.ProcessName;
             var processId = process.Id;
 

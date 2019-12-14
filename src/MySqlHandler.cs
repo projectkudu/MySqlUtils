@@ -6,11 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.UI;
 
 namespace MySqlUtils
 {
     public class MySqlHandler : HttpTaskAsyncHandler
     {
+        private static object _lockObj = new object();
+        private static MySqlProcess _process;
+
         private Lazy<MySqlInfo> _sqlInfo = new Lazy<MySqlInfo>(MySqlInfo.Create);
         protected readonly Tracer _tracer;
 
@@ -67,6 +71,36 @@ namespace MySqlUtils
         public void Trace(string format, params object[] args)
         {
             _tracer.Trace(format, args);
+        }
+
+        public static bool TryStartSqlProcess(HttpContext context, string exe, string arguments, out MySqlProcess process)
+        {
+            lock (_lockObj)
+            {
+                process = _process;
+                if (process != null)
+                {
+                    try
+                    {
+                        if (!process.HasExited)
+                        {
+                            context.Response.StatusCode = 409;
+                            context.Response.Write(string.Format("The process {0}:{1} is still running!", process.Id, process.ProcessName));
+                            context.Response.End();
+                            return false;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                    }
+
+                    _process = null;
+                }
+
+                _process = MySqlProcess.Start(exe, arguments);
+                process = _process;
+                return true;
+            }
         }
 
         public override Task ProcessRequestAsync(HttpContext context)

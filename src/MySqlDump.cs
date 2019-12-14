@@ -28,8 +28,13 @@ namespace MySqlUtils
             // http://dev.mysql.com/doc/refman/5.6/en/mysqldump.html#option_mysqldump_single-transaction
             var arguments = string.Format(@"--single-transaction -u{0} -p{1} -h{2} --port={3} --result-file={4} {5}", UserID, Password, Server, Port, _resultFile, Database);
             Trace("\"{0}\" {1}", exe, arguments.Replace(Password, "*****"));
+            
+            MySqlProcess process;
+            if (!TryStartSqlProcess(context, exe, arguments, out process))
+            {
+                return;
+            }
 
-            var process = MySqlProcess.Start(exe, arguments);
             var processName = process.ProcessName;
             var processId = process.Id;
 
