@@ -105,14 +105,6 @@ namespace MySqlUtils
 
         public override Task ProcessRequestAsync(HttpContext context)
         {
-            var dict = new Dictionary<string, object>
-            {
-                { "Verb", context.Request.HttpMethod },
-                { "RawUrl", context.Request.RawUrl },
-                { "Url", context.Request.Url },
-                { "Body", new StreamReader(context.Request.InputStream).ReadToEnd() },
-            };
-
             var strb = new StringBuilder();
             strb.AppendLine("<!DOCTYPE html>");
             strb.AppendLine("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
@@ -135,13 +127,6 @@ namespace MySqlUtils
             strb.AppendLine("       <th>key</th>");
             strb.AppendLine("       <th>value</th>");
             strb.AppendLine("   </tr>");
-            foreach (var pair in dict)
-            {
-                strb.AppendLine("   <tr>");
-                strb.AppendLine(String.Format("       <td>{0}</td>", pair.Key));
-                strb.AppendLine(String.Format("       <td>{0}</td>", pair.Value));
-                strb.AppendLine("   </tr>");
-            }
             foreach (var key in context.Request.ServerVariables.AllKeys)
             {
                 strb.AppendLine("   <tr>");
