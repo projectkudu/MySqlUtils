@@ -3,7 +3,7 @@ setlocal
 set _DP0=%~dp0
 set _ARTIFACT=%_DP0%artifacts
 set _7ZEXE=C:\Program Files\7-Zip\7z.exe
-set _MSBUILDEXE=%PROGRAMFILES%\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\msbuild.exe
+set _MSBUILDEXE=%PROGRAMFILES(X86)%\MSBuild\14.0\Bin\MsBuild.exe
 
 for /f tokens^=1^,2^ delims^=^" %%a in ('sed -n /AssemblyFileVersion/p %_DP0%Properties\AssemblyInfo.cs') do (set _VERSION=%%b)
 echo Building MySqlUtils %_VERSION%
