@@ -122,19 +122,6 @@ namespace MySqlUtils
             strb.AppendLine("    </style>");
             strb.AppendLine("</head>");
             strb.AppendLine("<body>");
-            strb.AppendLine("<table>");
-            strb.AppendLine("   <tr>");
-            strb.AppendLine("       <th>key</th>");
-            strb.AppendLine("       <th>value</th>");
-            strb.AppendLine("   </tr>");
-            foreach (var key in context.Request.ServerVariables.AllKeys)
-            {
-                strb.AppendLine("   <tr>");
-                strb.AppendLine(String.Format("       <td>{0}</td>", key));
-                strb.AppendLine(String.Format("       <td>{0}</td>", context.Request.ServerVariables[key]));
-                strb.AppendLine("   </tr>");
-            }
-            strb.AppendLine("</table>");
             strb.AppendLine("</body>");
             strb.AppendLine("</html>");
 
